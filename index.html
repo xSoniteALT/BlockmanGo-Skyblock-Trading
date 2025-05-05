@@ -1,0 +1,147 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blockman Go Skyblock Trade Finder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #121212;
+      color: #fff;
+    }
+    header {
+      background-color: #1f1f1f;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      border-bottom: 2px solid #333;
+    }
+    main {
+      max-width: 900px;
+      margin: auto;
+      padding: 2rem;
+    }
+    .trade-form {
+      background: #1e1e1e;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+    }
+    .trade-form input, .trade-form button {
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+      width: 100%;
+      border-radius: 6px;
+      border: none;
+      font-size: 1rem;
+    }
+    .trade-form button {
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+    .trade-list {
+      display: grid;
+      gap: 1rem;
+    }
+    .trade-card {
+      background: #222;
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px solid #333;
+    }
+    .trade-card p {
+      margin: 0.5rem 0;
+    }
+    .trade-actions button {
+      margin-right: 0.5rem;
+      background-color: #333;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+    }
+    .trade-actions button:hover {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body>
+  <header>Blockman Go Skyblock Trade Finder</header>
+  <main>
+    <div class="trade-form">
+      <h2>Post a Trade</h2>
+      <input type="text" id="ign" placeholder="Your In-Game Name">
+      <input type="text" id="offer" placeholder="What are you offering?">
+      <input type="text" id="want" placeholder="What do you want?">
+      <button onclick="submitTrade()">Post Trade</button>
+    </div>
+
+    <h2>Latest Trades</h2>
+    <div id="trade-list" class="trade-list"></div>
+  </main>
+
+  <script>
+    const tradeList = document.getElementById("trade-list");
+
+    function loadTrades() {
+      const trades = JSON.parse(localStorage.getItem("trades") || "[]");
+      tradeList.innerHTML = "";
+      trades.reverse().forEach((trade, index) => {
+        const card = document.createElement("div");
+        card.className = "trade-card";
+        card.innerHTML = `
+          <p><strong>IGN:</strong> ${trade.ign}</p>
+          <p><strong>Offer:</strong> ${trade.offer}</p>
+          <p><strong>Want:</strong> ${trade.want}</p>
+          <div class="trade-actions">
+            <button onclick="message('${trade.ign}')">Message</button>
+            <button onclick="acceptTrade(${index})">Accept</button>
+            <button onclick="declineTrade(${index})">Decline</button>
+          </div>
+        `;
+        tradeList.appendChild(card);
+      });
+    }
+
+    function submitTrade() {
+      const ign = document.getElementById("ign").value.trim();
+      const offer = document.getElementById("offer").value.trim();
+      const want = document.getElementById("want").value.trim();
+      if (!ign || !offer || !want) {
+        alert("Fill in all fields!");
+        return;
+      }
+
+      const trades = JSON.parse(localStorage.getItem("trades") || "[]");
+      trades.push({ ign, offer, want });
+      localStorage.setItem("trades", JSON.stringify(trades));
+      loadTrades();
+
+      document.getElementById("ign").value = "";
+      document.getElementById("offer").value = "";
+      document.getElementById("want").value = "";
+    }
+
+    function message(name) {
+      alert(`Message sent to ${name} (not functional yet)`);
+    }
+
+    function acceptTrade(index) {
+      alert(`Trade #${index + 1} accepted (visual only)`);
+    }
+
+    function declineTrade(index) {
+      alert(`Trade #${index + 1} declined (visual only)`);
+    }
+
+    loadTrades();
+  </script>
+</body>
+</html>
